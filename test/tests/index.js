@@ -78,6 +78,52 @@ suite('Marionette Forms plugin', function() {
       });
     });
 
+    process.env.SYNC && suite('synchronous API', function() {
+      suite('single element', function() {
+        test('text', function() {
+          client.forms.fill(this.text1, 'Some text');
+          assert.equal(this.text1.getAttribute('value'), 'Some text');
+        });
+        test('time', function() {
+          var date = new Date();
+          date.setHours(1);
+          date.setMinutes(2);
+          date.setSeconds(3);
+          client.forms.fill(this.time, date);
+          assert.equal(this.time.getAttribute('value'), '01:02:03');
+        });
+        test('date', function() {
+          var date = new Date();
+          date.setYear(1997);
+          date.setMonth(0);
+          date.setDate(2);
+          client.forms.fill(this.date, date);
+          assert.equal(this.date.getAttribute('value'), '1997-01-02');
+        });
+      });
+
+      test('multiple elements', function() {
+        var date = new Date();
+        date.setYear(1997);
+        date.setMonth(0);
+        date.setDate(2);
+        date.setHours(3);
+        date.setMinutes(4);
+        date.setSeconds(5);
+
+        client.forms.fill(this.form, {
+          'my-text-1': 'Some text',
+          'my-text-2': 'Some more text',
+          'my-time': date,
+          'my-date': date
+        });
+        assert.equal(this.text1.getAttribute('value'), 'Some text');
+        assert.equal(this.text2.getAttribute('value'), 'Some more text');
+        assert.equal(this.time.getAttribute('value'), '03:04:05');
+        assert.equal(this.date.getAttribute('value'), '1997-01-02');
+      });
+    });
+
     test('multiple elements', function() {
       var date = new Date();
       date.setYear(1997);
