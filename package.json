@@ -28,6 +28,9 @@
   },
   "devDependencies": {
     "mozilla-download": "~0.2.1",
-    "marionette-js-runner": "~0.1.0"
+    "marionette-js-runner": "~0.1.0",
+    "empty-port": "0.0.1",
+    "node-static": "~0.7.0",
+    "async": "~0.2.9"
   }
 }
