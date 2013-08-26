@@ -33,15 +33,36 @@ var dateFormatters = {
  *                       (when setting multiple values)
  */
 Forms.prototype.fill = function(elem, value, done) {
-  setValue.call(this, elem, value, done);
+  var keys, setCount;
+  if (typeof value === 'object' && !(value instanceof Date)) {
+    var keys = Object.keys(value);
+    var setCount = keys.length;
+    function setKey() {
+      setCount--;
+      if (setCount === 0) {
+        done && done();
+      }
+    }
+
+    Object.keys(value).forEach(function(key) {
+      elem.findElement('[name="' + key + '"]', function(err, elem) {
+        setValue.call(this, elem, value[key], setKey);
+      });
+    });
+  } else {
+    setValue.call(this, elem, value, done);
+  }
 };
 
 function setValue(elem, value, done) {
   elem.getAttribute('type', function(err, type) {
+
     type = type.trim().toLowerCase();
+
     if (value instanceof Date && dateFormatters.hasOwnProperty(type)) {
       value = dateFormatters[type](value);
     }
+
     elem.client.executeScript(function(elem, value) {
       elem.value = value;
     }, [elem, value], done);

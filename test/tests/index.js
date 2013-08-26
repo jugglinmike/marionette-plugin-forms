@@ -53,11 +53,11 @@ suite('Marionette Forms plugin', function() {
         }.bind(this));
       });
       test('time', function(done) {
-        var now = new Date();
-        now.setHours(1);
-        now.setMinutes(2);
-        now.setSeconds(3);
-        client.forms.fill(this.time, now, function() {
+        var date = new Date();
+        date.setHours(1);
+        date.setMinutes(2);
+        date.setSeconds(3);
+        client.forms.fill(this.time, date, function() {
           this.time.getAttribute('value', function(err, val) {
             assert.equal(val, '01:02:03');
             done();
@@ -65,11 +65,11 @@ suite('Marionette Forms plugin', function() {
         }.bind(this));
       });
       test('date', function(done) {
-        var now = new Date();
-        now.setYear(1997);
-        now.setMonth(0);
-        now.setDate(2);
-        client.forms.fill(this.date, now, function() {
+        var date = new Date();
+        date.setYear(1997);
+        date.setMonth(0);
+        date.setDate(2);
+        client.forms.fill(this.date, date, function() {
           this.date.getAttribute('value', function(err, val) {
             assert.equal(val, '1997-01-02');
             done();
@@ -78,16 +78,33 @@ suite('Marionette Forms plugin', function() {
       });
     });
 
-    test.skip('multiple elements', function() {
-      //assert.ok(typeof client.forms.fill === 'function');
+    test('multiple elements', function() {
+      var date = new Date();
+      date.setYear(1997);
+      date.setMonth(0);
+      date.setDate(2);
+      date.setHours(3);
+      date.setMinutes(4);
+      date.setSeconds(5);
+
       client.forms.fill(this.form, {
         'my-text-1': 'Some text',
-        'my-text-2': 'Some more text'
-      });
-      assert.equal(
-        client.findElement('#form-a [name="my-text-1"]').getAttribute('value'),
-        'Some text'
-      );
+        'my-text-2': 'Some more text',
+        'my-time': date,
+        'my-date': date
+      }, function() {
+        async.parallel([
+          this.text1.getAttribute.bind(this.text1, 'value'),
+          this.text2.getAttribute.bind(this.text2, 'value'),
+          this.time.getAttribute.bind(this.time, 'value'),
+          this.date.getAttribute.bind(this.date, 'value')
+        ], function(err, results) {
+          assert.equal(results[0], 'Some text');
+          assert.equal(results[1], 'Some more text');
+          assert.equal(results[2], '03:04:05');
+          assert.equal(results[3], '1997-01-02');
+        });
+      }.bind(this));
     });
   });
 });
