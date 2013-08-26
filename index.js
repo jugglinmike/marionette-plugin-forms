@@ -33,25 +33,14 @@ var dateFormatters = {
  *                       (when setting multiple values)
  */
 Forms.prototype.fill = function(elem, value, done) {
-  var keys, setCount;
-  if (typeof value === 'object' && !(value instanceof Date)) {
-    var keys = Object.keys(value);
-    var setCount = keys.length;
-    function setKey() {
-      setCount--;
-      if (setCount === 0) {
-        done && done();
-      }
-    }
 
-    Object.keys(value).forEach(function(key) {
-      elem.findElement('[name="' + key + '"]', function(err, elem) {
-        setValue.call(this, elem, value[key], setKey);
-      });
-    });
-  } else {
-    setValue.call(this, elem, value, done);
-  }
+  elem.tagName(function(err, tagName) {
+    if (tagName === 'form') {
+      setValues(elem, value, done);
+    } else {
+      setValue(elem, value, done);
+    }
+  });
 };
 
 function setValue(elem, value, done) {
@@ -66,6 +55,23 @@ function setValue(elem, value, done) {
     elem.client.executeScript(function(elem, value) {
       elem.value = value;
     }, [elem, value], done);
+  });
+}
+
+function setValues(form, values, done) {
+  var keys = Object.keys(values);
+  var setCount = keys.length;
+  function setKey() {
+    setCount--;
+    if (setCount === 0) {
+      done && done();
+    }
+  }
+
+  keys.forEach(function(key) {
+    form.findElement('[name="' + key + '"]', function(err, elem) {
+      setValue(elem, values[key], setKey);
+    });
   });
 }
 
