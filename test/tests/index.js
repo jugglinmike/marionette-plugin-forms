@@ -44,36 +44,38 @@ suite('Marionette Forms plugin', function() {
 
   suite('#fill', function() {
 
-    suite('single element', function() {
-      test('text', function(done) {
-        client.forms.fill(elems.text1, 'Some text', function() {
-          elems.text1.getAttribute('value', function(err, val) {
-            assert.equal(val, 'Some text');
-            done();
+    suite('asynchronous API', function() {
+      suite('single element', function() {
+        test('text', function(done) {
+          client.forms.fill(elems.text1, 'Some text', function() {
+            elems.text1.getAttribute('value', function(err, val) {
+              assert.equal(val, 'Some text');
+              done();
+            });
           });
         });
-      });
-      test('time', function(done) {
-        var date = new Date();
-        date.setHours(1);
-        date.setMinutes(2);
-        date.setSeconds(3);
-        client.forms.fill(elems.time, date, function() {
-          elems.time.getAttribute('value', function(err, val) {
-            assert.equal(val, '01:02:03');
-            done();
+        test('time', function(done) {
+          var date = new Date();
+          date.setHours(1);
+          date.setMinutes(2);
+          date.setSeconds(3);
+          client.forms.fill(elems.time, date, function() {
+            elems.time.getAttribute('value', function(err, val) {
+              assert.equal(val, '01:02:03');
+              done();
+            });
           });
         });
-      });
-      test('date', function(done) {
-        var date = new Date();
-        date.setYear(1997);
-        date.setMonth(0);
-        date.setDate(2);
-        client.forms.fill(elems.date, date, function() {
-          elems.date.getAttribute('value', function(err, val) {
-            assert.equal(val, '1997-01-02');
-            done();
+        test('date', function(done) {
+          var date = new Date();
+          date.setYear(1997);
+          date.setMonth(0);
+          date.setDate(2);
+          client.forms.fill(elems.date, date, function() {
+            elems.date.getAttribute('value', function(err, val) {
+              assert.equal(val, '1997-01-02');
+              done();
+            });
           });
         });
       });
