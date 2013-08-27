@@ -7,6 +7,13 @@ MOCHA_OPTS=--reporter $(REPORTER) \
 .PHONY: default
 default: lint test
 
+# This target is listed as phony because although it generates a directory
+# named `node_modules`, the directory's presence does not indicate that the
+# dependencies are fully satisfied and up-to-date.
+.PHONY: node_modules
+node_modules:
+	npm install
+
 b2g:
 	./node_modules/.bin/mozilla-download --verbose --product b2g $@
 
@@ -25,4 +32,4 @@ test-async:
 	./node_modules/.bin/marionette-mocha $(MOCHA_OPTS)
 
 .PHONY: test
-test: b2g test-sync test-async
+test: b2g node_modules test-sync test-async
