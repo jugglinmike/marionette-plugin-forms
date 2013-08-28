@@ -1,8 +1,8 @@
-TESTS?=$(shell find test -path test/tests/*.js)
+INTEGRATION_TESTS?=$(shell find test -path test/integration/tests/*.js)
 REPORTER?=spec
 MOCHA_OPTS=--reporter $(REPORTER) \
 					 --profile-base $(PWD)/profile.js \
-					 $(TESTS)
+					 $(INTEGRATION_TESTS)
 
 .PHONY: default
 default: lint test
@@ -23,13 +23,16 @@ lint:
 		--disable "220,225" \
 		--exclude_directories "b2g,examples,node_modules"
 
-.PHONY: test-sync
-test-sync:
+.PHONY: integration-test-sync
+integration-test-sync:
 	SYNC=true ./node_modules/.bin/marionette-mocha $(MOCHA_OPTS)
 
-.PHONY: test-async
-test-async:
+.PHONY: integration-test-async
+integration-test-async:
 	./node_modules/.bin/marionette-mocha $(MOCHA_OPTS)
 
+.PHONY: integration-test
+integration-test: integration-test-sync integration-test-async
+
 .PHONY: test
-test: b2g node_modules test-sync test-async
+test: b2g node_modules integration-test

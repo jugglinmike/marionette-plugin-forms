@@ -7,7 +7,7 @@ suite('Marionette Forms plugin', function() {
   var elems = {};
   var serverAddr, serverProcess;
 
-  marionette.plugin('forms', require('../..'));
+  marionette.plugin('forms', require('../../..'));
 
   suiteSetup(function(done) {
     emptyPort({ startPort: 3000 }, function(err, port) {
